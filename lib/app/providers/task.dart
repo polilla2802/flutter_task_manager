@@ -7,12 +7,13 @@ class TaskProvider {
     _api = API();
   }
 
-  Future<ApiResult> getAllTasks() async {
+  Future<ApiResult> getAllTasks(String token) async {
     try {
-      final String url = "/vdev/tasks-challenge/tasks";
+      const String url = "/vdev/tasks-challenge/tasks";
 
-      return await _api.get(
-          ApiRequest(ApiChannel.nextline, "getAllTasks", url, AuthType.bearer));
+      return await _api.get(ApiRequest(
+          ApiChannel.nextline, "getAllTasks", url, AuthType.bearer,
+          queryParameters: {"token": token}));
     } catch (e) {
       return ApiResult(false);
     }

@@ -7,17 +7,20 @@ class TaskRepo {
   late TaskProvider _taskProvider;
 
   TaskRepo() {
-    this._taskProvider = TaskProvider();
+    _taskProvider = TaskProvider();
   }
 
-  Future<Result<String>> getAllTasks() async {
+  Future<Result<String>> getAllTasks(String token) async {
     try {
-      final ApiResult result = await this._taskProvider.getAllTasks();
+      final ApiResult result = await _taskProvider.getAllTasks(token);
 
-      if (result.hasData()) {}
+      if (result.hasData()) {
+        print("task ${result.data}");
+        return Result.ok(result.data);
+      }
 
       if (result.isException()) {
-        Result.apiFail(result.exception);
+        return Result.apiFail(result.exception);
       }
 
       return Result.ok(result.data);
