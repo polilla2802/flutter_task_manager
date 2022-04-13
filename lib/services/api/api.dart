@@ -134,6 +134,47 @@ class API {
     }
   }
 
+  Future<ApiResult> delete(ApiRequest request) async {
+    try {
+      final Uri uri = Uri.parse(
+          _buildUri(request.api, request.uri, request.queryParameters));
+
+      print("[URI] DELETE ${uri.toString()}");
+
+      final String tokenResult = _getToken();
+
+      final Map<String, String> headers =
+          await _getHeaders(request.api, request.authType, tokenResult);
+
+      ApiLogger.printUrl(uri.toString(), request.key);
+      ApiLogger.printHeaders(headers, request.key);
+
+      if (request.body != null) {
+        final String body = convert.jsonEncode(request.body);
+        ApiLogger.printBodyEncoded(body, request.key);
+        final http.Response response =
+            await http.delete(uri, headers: headers, body: body);
+
+        final ApiResult result =
+            _resolveResponse(request.key, response, request.api);
+        ApiLogger.printResponse(result.toString(), request.key);
+
+        return result;
+      } else {
+        final http.Response response = await http.delete(uri, headers: headers);
+
+        final ApiResult result =
+            _resolveResponse(request.key, response, request.api);
+        ApiLogger.printResponse(result.toString(), request.key);
+
+        return result;
+      }
+    } catch (e, stackTrace) {
+      return ApiResult.fail(
+          PutExecutionFailure(error: e.toString(), stackTrace: stackTrace));
+    }
+  }
+
   Future<ApiResult> patch(ApiRequest request) async {
     try {
       final Uri uri = Uri.parse(
