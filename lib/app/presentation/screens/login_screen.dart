@@ -13,15 +13,16 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   String? _key;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late GlobalKey<FormState> _formKey;
   late TextEditingController _loginController;
   FocusNode? _myFocus;
-  String userName = "";
+  String _userName = "";
 
   _LoginScreenState(String login_screen_key) {
     _key = login_screen_key;
     _myFocus = FocusNode();
     _loginController = TextEditingController();
+    _formKey = GlobalKey<FormState>();
   }
 
   @override
@@ -35,56 +36,59 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _afterBuild() async {}
 
   Future<void> _login(BuildContext context) async {
-    if (!_formKey.currentState!.validate()) {
-      return;
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => TasksScreen(
+                  userName: _userName,
+                )),
+      );
     }
-
-    _formKey.currentState!.save();
-
-    await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => TasksScreen()),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Login"),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-                padding: EdgeInsets.only(bottom: 8),
-                child: Form(
-                  key: _formKey,
-                  child: Input(
-                    controller: _loginController,
-                    labelText: "Ingresa tu usuario",
-                    validator: (String? value) {
-                      if (value!.isEmpty) {}
-                      return null;
-                    },
-                    onSave: (String? value) {
-                      userName = value!;
-                    },
-                    focusNode: _myFocus,
-                  ),
-                )),
-            GestureDetector(
-              onTap: () => _login(context),
-              child: Container(
-                height: 50,
-                width: 100,
-                child: Text("login"),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
+    return WillPopScope(
+        onWillPop: () async {
+          return false;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text("Login"),
+          ),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                    padding: EdgeInsets.all(16),
+                    child: Form(
+                      key: _formKey,
+                      child: Input(
+                        controller: _loginController,
+                        labelText: "Ingresa tu usuario",
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                        onSave: (String? value) {
+                          _userName = value!.trim();
+                        },
+                        focusNode: _myFocus,
+                      ),
+                    )),
+                ElevatedButton(
+                  onPressed: () => _login(context),
+                  child: const Text('Submit'),
+                )
+              ],
+            ),
+          ),
+        ));
   }
 }
