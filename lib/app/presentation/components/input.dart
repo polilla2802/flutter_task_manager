@@ -54,15 +54,10 @@ class Input extends StatelessWidget {
       decoration: InputDecoration(
         alignLabelWithHint: true,
         labelText: labelText,
-        labelStyle: TextStyle(
-            overflow: TextOverflow.ellipsis,
-            color: focusNode != null
-                ? focusNode!.hasFocus
-                    ? Colors.red
-                    : Colors.grey
-                : Colors.black),
+        labelStyle:
+            TextStyle(overflow: TextOverflow.ellipsis, color: Colors.blue),
         filled: true,
-        fillColor: Colors.grey,
+        fillColor: Colors.black12,
         border: OutlineInputBorder(
           borderSide: BorderSide.none,
           borderRadius: BorderRadius.circular(10.0),
@@ -72,7 +67,7 @@ class Input extends StatelessWidget {
       validator: validator,
       onSaved: onSave,
       textInputAction: textInputAction,
-      cursorColor: Colors.red,
+      cursorColor: Colors.blue,
       onChanged: onChanged as void Function(String)?,
     );
   }
