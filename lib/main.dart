@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_task_manager/app/configuration/environment.dart';
-import 'package:flutter_task_manager/app/presentation/screens/tasks_screen.dart';
+import 'package:flutter_task_manager/app/presentation/screens/login_screen.dart';
 
 void main() {
   final key = "main prod";
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: TasksScreen(),
+      home: LoginScreen(),
     );
   }
 }
