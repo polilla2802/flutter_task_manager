@@ -30,8 +30,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   Future<void> _postTask({TaskRequest? task, BuildContext? context}) async {
     if (_createTaskController.formKey.currentState!.validate()) {
       _createTaskController.formKey.currentState!.save();
-      await _createTaskController.postTask(
-          TaskArgs(taskRequest: task), context!);
+      await _createTaskController.postTask(context!);
     }
   }
 
@@ -99,10 +98,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
           case TasksState.initial:
           default:
             return FloatingActionButton(
-              onPressed: () => _postTask(
-                  task: TaskRequest(_tasksController.userToken, "test", 0,
-                      dueDate: "2022-04-13"),
-                  context: context),
+              onPressed: () => _postTask(context: context),
               tooltip: 'Increment',
               child: const Icon(Icons.add),
             );

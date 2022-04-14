@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_task_manager/app/models/core/controller_result.dart';
 import 'package:flutter_task_manager/app/models/core/result.dart';
+import 'package:flutter_task_manager/app/models/requests/get_task.dart';
 import 'package:flutter_task_manager/app/models/responses/create_task.dart';
 import 'package:flutter_task_manager/app/models/responses/delete_task.dart';
 import 'package:flutter_task_manager/app/models/responses/put_task.dart';
@@ -129,12 +130,17 @@ class CreateTaskController extends ChangeNotifier {
     _emit();
   }
 
-  Future<void> postTask(TaskArgs args, BuildContext context) async {
+  Future<void> postTask(BuildContext context) async {
     _changeState(TasksState.loading);
 
     try {
-      Result<CreateTaskResponse> taskResult =
-          await tasksRepo.postTaskByToken(args);
+      Result<CreateTaskResponse> taskResult = await tasksRepo.postTaskByToken(
+          TaskArgs(
+              taskRequest: TaskRequest(_userToken, _title, _isCompleted,
+                  dueDate: _dueDate,
+                  comments: _comments,
+                  description: _description,
+                  tags: _tags)));
 
       if (taskResult.hasData()) {
         await Navigator.push(

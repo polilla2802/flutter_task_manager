@@ -199,9 +199,6 @@ class _CreateTaskCardState extends State<CreateTaskCard> {
                                         controller: _dateController,
                                         labelText: "YYYY-MM-DD",
                                         validator: (String? value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Por favor ingresa una fecha';
-                                          }
                                           return null;
                                         },
                                         onSave: (String? value) {
@@ -236,9 +233,6 @@ class _CreateTaskCardState extends State<CreateTaskCard> {
                                         controller: _commentController,
                                         labelText: "Ingresa un comentario",
                                         validator: (String? value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Por favor ingresa un comentario';
-                                          }
                                           return null;
                                         },
                                         onSave: (String? value) {
@@ -273,9 +267,6 @@ class _CreateTaskCardState extends State<CreateTaskCard> {
                                         controller: _descriptionController,
                                         labelText: "Ingresa una descripción",
                                         validator: (String? value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Por favor ingresa una descripción';
-                                          }
                                           return null;
                                         },
                                         onSave: (String? value) {
@@ -310,9 +301,6 @@ class _CreateTaskCardState extends State<CreateTaskCard> {
                                         controller: _tagController,
                                         labelText: "#Tag",
                                         validator: (String? value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Por favor ingresa un tag';
-                                          }
                                           return null;
                                         },
                                         onSave: (String? value) {
