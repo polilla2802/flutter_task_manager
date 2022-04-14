@@ -76,9 +76,30 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    CreateTaskCard(
-                                      createTaskController:
-                                          _createTaskController,
+                                    Consumer<CreateTaskController>(
+                                      builder:
+                                          (context, _tasksController, child) {
+                                        switch (_tasksController.state) {
+                                          case TasksState.success:
+                                          case TasksState.loading:
+                                            return Container(
+                                              alignment: Alignment.center,
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          case TasksState.error:
+                                            return Container(
+                                                alignment: Alignment.center,
+                                                child: Text(
+                                                    "Lo siento hubo un error"));
+                                          case TasksState.initial:
+                                          default:
+                                            return CreateTaskCard(
+                                              createTaskController:
+                                                  _createTaskController,
+                                            );
+                                        }
+                                      },
                                     )
                                   ],
                                 ),

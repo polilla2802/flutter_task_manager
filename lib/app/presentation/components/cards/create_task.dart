@@ -77,9 +77,13 @@ class _CreateTaskCardState extends State<CreateTaskCard> {
                     icon: Icon(Icons.more_vert, size: 30, color: Colors.white),
                     onSelected: (TaskOptions result) {
                       if (result == TaskOptions.completed) {
-                        _createTaskController.setIsCompleted = 1;
+                        setState(() {
+                          _createTaskController.setIsCompleted = 1;
+                        });
                       } else if (result == TaskOptions.notCompleted) {
-                        _createTaskController.setIsCompleted = 0;
+                        setState(() {
+                          _createTaskController.setIsCompleted = 0;
+                        });
                       }
                     },
                     itemBuilder: (BuildContext context) =>
@@ -199,9 +203,6 @@ class _CreateTaskCardState extends State<CreateTaskCard> {
                                         controller: _dateController,
                                         labelText: "YYYY-MM-DD",
                                         validator: (String? value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Por favor ingresa una fecha válida';
-                                          }
                                           return null;
                                         },
                                         onSave: (String? value) {
@@ -236,9 +237,6 @@ class _CreateTaskCardState extends State<CreateTaskCard> {
                                         controller: _commentController,
                                         labelText: "Ingresa un comentario",
                                         validator: (String? value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Por favor ingresa un comentario';
-                                          }
                                           return null;
                                         },
                                         onSave: (String? value) {
@@ -273,9 +271,6 @@ class _CreateTaskCardState extends State<CreateTaskCard> {
                                         controller: _descriptionController,
                                         labelText: "Ingresa una descripción",
                                         validator: (String? value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Por favor ingresa una descripción';
-                                          }
                                           return null;
                                         },
                                         onSave: (String? value) {
@@ -310,9 +305,6 @@ class _CreateTaskCardState extends State<CreateTaskCard> {
                                         controller: _tagController,
                                         labelText: "#Tag",
                                         validator: (String? value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Por favor ingresa un tag';
-                                          }
                                           return null;
                                         },
                                         onSave: (String? value) {

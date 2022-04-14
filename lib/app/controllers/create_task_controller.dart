@@ -137,10 +137,10 @@ class CreateTaskController extends ChangeNotifier {
       Result<CreateTaskResponse> taskResult = await tasksRepo.postTaskByToken(
           TaskArgs(
               taskRequest: TaskRequest(_userToken, _title, _isCompleted,
-                  dueDate: _dueDate,
-                  comments: _comments,
-                  description: _description,
-                  tags: _tags)));
+                  dueDate: _dueDate.isEmpty ? null : _dueDate,
+                  comments: _comments.isEmpty ? null : _comments,
+                  description: _description.isEmpty ? null : _description,
+                  tags: _tags.isEmpty ? null : _tags)));
 
       if (taskResult.hasData()) {
         await Navigator.push(
