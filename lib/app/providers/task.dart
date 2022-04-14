@@ -45,42 +45,52 @@ class TaskProvider {
   }
 
   Future<ApiResult> getTaskById(TaskArgs args) async {
-    const String url = "/vdev/tasks-challenge/tasks/task_id";
+    String url = "/vdev/tasks-challenge/tasks/${args.taskId}";
 
     try {
       return await _api.get(ApiRequest(
           ApiChannel.nextline, "getTaskById", url, AuthType.bearer,
-          queryParameters: {"task_id": args.taskId.toString()}));
+          queryParameters: {"token": args.token.toString()}));
     } catch (e) {
       return ApiResult(false);
     }
   }
 
   Future<ApiResult> putTaskById(TaskArgs args) async {
-    var putBody = args.taskRequest!.toJson();
-    const String url = "/vdev/tasks-challenge/tasks/task_id";
+    String url = "/vdev/tasks-challenge/tasks/${args.taskId}";
 
     try {
       return await _api.put(ApiRequest(
-        ApiChannel.nextline,
-        "putTaskById",
-        url,
-        AuthType.bearer,
-        body: putBody,
-      ));
+          ApiChannel.urlencoded, "putTaskById", url, AuthType.bearer,
+          queryParameters: {
+            "token": args.taskRequest!.token.toString(),
+            "title": args.taskRequest!.title.toString(),
+            "is_completed": args.taskRequest!.isCompleted.toString(),
+            "due_date": args.taskRequest!.dueDate.toString() != null
+                ? args.taskRequest!.dueDate.toString()
+                : "2022-04-13",
+            "comments": args.taskRequest!.comments.toString() != null
+                ? args.taskRequest!.comments.toString()
+                : "Sin comentarios",
+            "description": args.taskRequest!.description.toString() != null
+                ? args.taskRequest!.description.toString()
+                : "Sin descripción",
+            "tags": args.taskRequest!.tags.toString() != null
+                ? args.taskRequest!.tags.toString()
+                : "Sin Tags",
+          }));
     } catch (e) {
       return ApiResult(false);
     }
   }
 
   Future<ApiResult> deleteTaskById(TaskArgs args) async {
-    var putBody = {"token": args.token};
-    const String url = "/vdev/tasks-challenge/tasks/task_id";
+    String url = "/vdev/tasks-challenge/tasks/${args.taskId}";
 
     try {
       return await _api.delete(ApiRequest(
           ApiChannel.nextline, "deleteTaskById", url, AuthType.bearer,
-          body: putBody, queryParameters: {"task_id": args.taskId}));
+          queryParameters: {"token": args.token}));
     } catch (e) {
       return ApiResult(false);
     }

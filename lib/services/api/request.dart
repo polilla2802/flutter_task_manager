@@ -1,11 +1,13 @@
 import 'package:flutter_task_manager/services/api/base_api_exception.dart';
 
-enum ApiChannel { nextline, undefined }
+enum ApiChannel { nextline, urlencoded, undefined }
 
 String getApiChannelKey(ApiChannel api) {
   switch (api) {
     case ApiChannel.nextline:
       return "nextline";
+    case ApiChannel.urlencoded:
+      return "urlencoded";
     case ApiChannel.undefined:
     default:
       return "undefined";

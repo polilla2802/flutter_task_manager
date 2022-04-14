@@ -5,11 +5,16 @@ import 'package:flutter_task_manager/app/models/exceptions/response.dart';
 import 'package:flutter_task_manager/app/models/tasks/TaskEntity.dart';
 
 class PutTaskResponse {
-  PutTaskResponse();
+  final String? detail;
+  final TaskEntity? taskEntity;
+
+  PutTaskResponse({this.detail, this.taskEntity});
 
   static Result<PutTaskResponse> fromJson(Map<String, dynamic> json) {
     try {
-      final response = PutTaskResponse();
+      final response = PutTaskResponse(
+          detail: json['detail'],
+          taskEntity: TaskEntity.fromJsonPut(json['task']));
 
       return Result.ok(response);
     } catch (e) {

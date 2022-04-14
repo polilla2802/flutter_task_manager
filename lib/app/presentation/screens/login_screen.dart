@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_task_manager/app/presentation/components/input.dart';
+import 'package:flutter_task_manager/app/presentation/components/form/input.dart';
 import 'package:flutter_task_manager/app/presentation/screens/tasks_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -56,39 +56,43 @@ class _LoginScreenState extends State<LoginScreen> {
           return false;
         },
         child: Scaffold(
-          appBar: AppBar(
-            title: Text("Login"),
-          ),
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                    padding: EdgeInsets.all(16),
-                    child: Form(
-                      key: _formKey,
-                      child: Input(
-                        controller: _loginController,
-                        labelText: "Ingresa tu usuario",
-                        validator: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
-                        onSave: (String? value) {
-                          _userName = value!.trim();
-                        },
-                        focusNode: _myFocus,
-                      ),
-                    )),
-                ElevatedButton(
-                  onPressed: () => _login(context),
-                  child: const Text('Submit'),
-                )
-              ],
+            appBar: AppBar(
+              leading: Container(),
+              title: Text("Login"),
             ),
-          ),
-        ));
+            body: _buildBody()));
+  }
+
+  Widget _buildBody() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+              padding: EdgeInsets.all(16),
+              child: Form(
+                key: _formKey,
+                child: Input(
+                  controller: _loginController,
+                  labelText: "Ingresa tu usuario",
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                  onSave: (String? value) {
+                    _userName = value!.trim();
+                  },
+                  focusNode: _myFocus,
+                ),
+              )),
+          ElevatedButton(
+            onPressed: () => _login(context),
+            child: const Text('Submit'),
+          )
+        ],
+      ),
+    );
   }
 }

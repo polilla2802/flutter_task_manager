@@ -1,22 +1,23 @@
 import 'dart:convert' as convert;
 
 class TaskRequest {
-  final String? token;
-  final String? title;
-  final int? isCompleted;
+  final String token;
+  final String title;
+  final int isCompleted;
   final String? dueDate;
   final String? comments;
   final String? description;
   final String? tags;
 
   TaskRequest(
-      {this.title,
-      this.isCompleted,
-      this.dueDate,
-      this.comments,
-      this.description,
-      this.tags,
-      this.token});
+    this.token,
+    this.title,
+    this.isCompleted, {
+    this.dueDate,
+    this.comments,
+    this.description,
+    this.tags,
+  });
 
   Map<String, dynamic> toJson() => {
         'token': token,

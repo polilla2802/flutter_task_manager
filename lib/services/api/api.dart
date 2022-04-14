@@ -265,11 +265,12 @@ class API {
   Future<Map<String, String>> _getHeaders(
       ApiChannel api, AuthType authType, String token) async {
     switch (api) {
-      case ApiChannel.nextline:
+      case ApiChannel.urlencoded:
         return {
-          "content-type": "application/json",
+          "content-type": "application/x-www-form-urlencoded",
           "authorization": _getAuthHeader(authType, token),
         };
+      case ApiChannel.nextline:
       default:
         return {
           "Content-Type": "application/json",

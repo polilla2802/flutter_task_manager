@@ -5,11 +5,15 @@ import 'package:flutter_task_manager/app/models/exceptions/response.dart';
 import 'package:flutter_task_manager/app/models/tasks/TaskEntity.dart';
 
 class DeleteTaskResponse {
-  DeleteTaskResponse();
+  final String? detail;
+
+  DeleteTaskResponse({this.detail});
 
   static Result<DeleteTaskResponse> fromJson(Map<String, dynamic> json) {
     try {
-      final response = DeleteTaskResponse();
+      final response = DeleteTaskResponse(
+        detail: json['detail'],
+      );
 
       return Result.ok(response);
     } catch (e) {

@@ -3,9 +3,9 @@ import 'dart:convert' as convert;
 import 'package:flutter_task_manager/app/models/tasks/Task.dart';
 
 class TaskEntity {
-  final int? id;
-  final String? title;
-  final int? isCompleted;
+  final int id;
+  final String title;
+  final int isCompleted;
   final String? dueDate;
   final String? comments;
   final String? description;
@@ -14,11 +14,8 @@ class TaskEntity {
   final String? updatedAt;
   final String? createdAt;
 
-  TaskEntity(
-      {this.id,
-      this.title,
-      this.isCompleted,
-      this.dueDate,
+  TaskEntity(this.id, this.title, this.isCompleted,
+      {this.dueDate,
       this.comments,
       this.description,
       this.tags,
@@ -38,9 +35,20 @@ class TaskEntity {
         updatedAt = json['updated_at'],
         createdAt = json['created_at'];
 
+  TaskEntity.fromJsonPut(Map<String, dynamic> json)
+      : id = json['id'],
+        title = json['title'],
+        isCompleted = int.parse(json['is_completed']),
+        dueDate = json['due_date'],
+        comments = json['comments'],
+        description = json['description'],
+        tags = json['tags'],
+        token = json['token'],
+        updatedAt = json['updated_at'],
+        createdAt = json['created_at'];
+
   Task toTask() {
-    return Task(
-        id: id, title: title, isCompleted: isCompleted, dueDate: dueDate);
+    return Task(id, title, isCompleted, dueDate: dueDate);
   }
 
   Map<String, dynamic> toJson() {

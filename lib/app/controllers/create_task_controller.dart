@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_task_manager/app/models/core/controller_result.dart';
 import 'package:flutter_task_manager/app/models/core/result.dart';
 import 'package:flutter_task_manager/app/models/responses/create_task.dart';
 import 'package:flutter_task_manager/app/models/responses/delete_task.dart';
 import 'package:flutter_task_manager/app/models/responses/put_task.dart';
 import 'package:flutter_task_manager/app/models/tasks/Task.dart';
+import 'package:flutter_task_manager/app/presentation/screens/tasks_screen.dart';
 import 'package:flutter_task_manager/app/providers/task.dart';
 import 'package:flutter_task_manager/app/repos/task.dart';
 
@@ -16,9 +18,6 @@ enum TasksState {
 
   /// The loading state is for the map when is loading, it shows a progrss indicator instead
   loading,
-
-  /// The ready state is for the map when it finish loading and it's ready to be interacted with.
-  noTasks,
 
   /// Everything is fine! :D yey!
   success,
@@ -33,8 +32,6 @@ String getMainTaskStateKey(TasksState state) {
       return "initial";
     case TasksState.loading:
       return "loading";
-    case TasksState.noTasks:
-      return "noTasks";
     case TasksState.success:
       return "success";
     case TasksState.error:
@@ -42,17 +39,24 @@ String getMainTaskStateKey(TasksState state) {
   }
 }
 
-class TasksController extends ChangeNotifier {
-  static const _key = "TasksController";
+class CreateTaskController extends ChangeNotifier {
+  static const _key = "CreateTaskController";
   late TasksState _state;
   late TaskRepo tasksRepo;
-
-  late List<Task>? tasks;
+  late GlobalKey<FormState> _formKey;
 
   late String _userToken;
+  late String _title;
+  late int _isCompleted = 0;
+  late String _dueDate;
+  late String _comments;
+  late String _description;
+  late String _tags;
+
   ControllerResult<TasksException>? _error;
 
-  TasksController({String userToken = ""}) {
+  CreateTaskController({String userToken = ""}) {
+    _formKey = GlobalKey<FormState>();
     _state = TasksState.initial;
     _userToken = userToken;
     tasksRepo = TaskRepo();
@@ -62,9 +66,51 @@ class TasksController extends ChangeNotifier {
   TasksState get state => _state;
   ControllerResult<TasksException>? get error => _error;
   String get userToken => _userToken;
+  int get isCompleted => _isCompleted;
+  String get dueDate => _dueDate;
+  String get comments => _comments;
+  String get description => _description;
+  String get tags => _tags;
+  GlobalKey<FormState> get formKey => _formKey;
 
   set setUserToken(String userToken) {
     _userToken = userToken;
+
+    _emit();
+  }
+
+  set setTitle(String title) {
+    _title = title;
+
+    _emit();
+  }
+
+  set setIsCompleted(int isCompleted) {
+    _isCompleted = isCompleted;
+
+    _emit();
+  }
+
+  set setDate(String date) {
+    _dueDate = date;
+
+    _emit();
+  }
+
+  set setComments(String comments) {
+    _comments = comments;
+
+    _emit();
+  }
+
+  set setDescription(String description) {
+    _description = description;
+
+    _emit();
+  }
+
+  set setTags(String tags) {
+    _tags = tags;
 
     _emit();
   }
@@ -83,28 +129,7 @@ class TasksController extends ChangeNotifier {
     _emit();
   }
 
-  Future<void> getTaskList() async {
-    _changeState(TasksState.loading);
-
-    try {
-      var taskResult =
-          await tasksRepo.getAllTasksByToken(TaskArgs(token: _userToken));
-
-      if (taskResult.hasData()) {
-        tasks = taskResult.data!;
-        if (taskResult.data!.isEmpty) {
-          _changeState(TasksState.noTasks);
-        } else {
-          _changeState(TasksState.success);
-        }
-      }
-    } catch (e) {
-      print("[$_key] There was an error");
-      _changeState(TasksState.error);
-    }
-  }
-
-  Future<void> postTask(TaskArgs args) async {
+  Future<void> postTask(TaskArgs args, BuildContext context) async {
     _changeState(TasksState.loading);
 
     try {
@@ -112,38 +137,13 @@ class TasksController extends ChangeNotifier {
           await tasksRepo.postTaskByToken(args);
 
       if (taskResult.hasData()) {
-        getTaskList();
-      }
-    } catch (e) {
-      print("[$_key] There was an error");
-      _changeState(TasksState.error);
-    }
-  }
-
-  Future<void> putTask(TaskArgs args) async {
-    _changeState(TasksState.loading);
-
-    try {
-      Result<PutTaskResponse> taskResult = await tasksRepo.putTaskById(args);
-
-      if (taskResult.hasData()) {
-        getTaskList();
-      }
-    } catch (e) {
-      print("[$_key] There was an error");
-      _changeState(TasksState.error);
-    }
-  }
-
-  Future<void> deleteTask(TaskArgs args) async {
-    _changeState(TasksState.loading);
-
-    try {
-      Result<DeleteTaskResponse> taskResult =
-          await tasksRepo.deleteTaskById(args);
-
-      if (taskResult.hasData()) {
-        getTaskList();
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => TasksScreen(
+                    userName: _userToken,
+                  )),
+        );
       }
     } catch (e) {
       print("[$_key] There was an error");

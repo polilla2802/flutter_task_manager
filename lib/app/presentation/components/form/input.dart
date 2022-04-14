@@ -9,7 +9,6 @@ class Input extends StatelessWidget {
       this.onSave,
       this.inputFormatters,
       this.initialValue,
-      this.suffixIcon,
       this.focusNode,
       this.onFieldSubmitted,
       this.enable = true,
@@ -18,6 +17,7 @@ class Input extends StatelessWidget {
       this.textInputType,
       this.onChanged,
       this.multiline = false,
+      this.color,
       this.controller})
       : super(key: key);
 
@@ -28,7 +28,6 @@ class Input extends StatelessWidget {
   final String? initialValue;
   final bool? enable;
   final bool obscureText;
-  final Widget? suffixIcon;
   final FocusNode? focusNode;
   final void Function(String)? onFieldSubmitted;
   final TextInputAction textInputAction;
@@ -36,6 +35,7 @@ class Input extends StatelessWidget {
   final Function? onChanged;
   final bool multiline;
   final TextEditingController? controller;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -54,20 +54,18 @@ class Input extends StatelessWidget {
       decoration: InputDecoration(
         alignLabelWithHint: true,
         labelText: labelText,
-        labelStyle:
-            TextStyle(overflow: TextOverflow.ellipsis, color: Colors.blue),
+        labelStyle: TextStyle(overflow: TextOverflow.ellipsis, color: color),
         filled: true,
         fillColor: Colors.black12,
         border: OutlineInputBorder(
           borderSide: BorderSide.none,
           borderRadius: BorderRadius.circular(10.0),
         ),
-        suffixIcon: suffixIcon == null ? null : suffixIcon,
       ),
       validator: validator,
       onSaved: onSave,
       textInputAction: textInputAction,
-      cursorColor: Colors.blue,
+      cursorColor: color,
       onChanged: onChanged as void Function(String)?,
     );
   }

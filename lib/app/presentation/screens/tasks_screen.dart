@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_task_manager/app/controllers/tasks_controller.dart';
 import 'package:flutter_task_manager/app/models/core/result.dart';
 import 'package:flutter_task_manager/app/models/requests/get_task.dart';
-import 'package:flutter_task_manager/app/models/responses/create_task.dart';
-import 'package:flutter_task_manager/app/models/responses/delete_task.dart';
-import 'package:flutter_task_manager/app/models/responses/put_task.dart';
 import 'package:flutter_task_manager/app/models/tasks/Task.dart';
+import 'package:flutter_task_manager/app/presentation/components/cards/task_card.dart';
+import 'package:flutter_task_manager/app/presentation/screens/create_task_screen.dart';
+import 'package:flutter_task_manager/app/presentation/screens/login_screen.dart';
 import 'package:flutter_task_manager/app/providers/task.dart';
 import 'package:flutter_task_manager/app/repos/task.dart';
 import 'package:provider/provider.dart';
@@ -44,91 +44,107 @@ class _TasksScreenState extends State<TasksScreen> {
     await _tasksController.getTaskList();
   }
 
-  Future<void> _postTask({TaskRequest? task}) async {
-    await _tasksController.postTask(TaskArgs(taskRequest: task));
+  Future<void> _postTask({String? token}) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => CreateTaskScreen(
+                userName: token,
+              )),
+    );
+  }
+
+  Future<void> _logOut() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
   }
 
   Future<void> _getTaskById({int? taskId}) async {
-    Result<Task> task = await tasksRepo.getTaskById(TaskArgs(taskId: taskId));
-  }
-
-  Future<void> _putTaskById(TaskRequest task) async {
-    Result<PutTaskResponse> tasks =
-        await tasksRepo.putTaskById(TaskArgs(taskRequest: task));
-  }
-
-  Future<void> _deleteTaskById(TaskRequest task) async {
-    Result<DeleteTaskResponse> tasks =
-        await tasksRepo.deleteTaskById(TaskArgs(taskRequest: task));
+    Result<Task> task = await tasksRepo.getTaskById(
+        TaskArgs(taskId: taskId, token: _tasksController.userToken));
   }
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => _tasksController,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(_tasksController.userToken),
-          ),
-          body: _buildBody(),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () => _postTask(
-                task: TaskRequest(
-                    title: "test",
-                    isCompleted: 0,
-                    dueDate: "2022-04-12",
-                    comments: "test",
-                    description: "test",
-                    tags: "test",
-                    token: _tasksController.userToken)),
-            tooltip: 'Increment',
-            child: const Icon(Icons.add),
-          ),
-        ));
+    return WillPopScope(
+        onWillPop: () async {
+          return false;
+        },
+        child: ChangeNotifierProvider(
+            create: (context) => _tasksController,
+            child: Scaffold(
+                appBar: AppBar(
+                  leading: Container(),
+                  title: Text(
+                    _tasksController.userToken,
+                    textAlign: TextAlign.center,
+                  ),
+                  actions: [
+                    GestureDetector(
+                        onTap: () => _logOut(),
+                        child: Container(
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.only(right: 16),
+                            child: Text("Logout")))
+                  ],
+                ),
+                body: _buildBody(),
+                floatingActionButton: _floatingButton())));
   }
 
   Widget _buildBody() {
-    return Consumer<TasksController>(
-      builder: (context, _tasksController, child) {
-        switch (_tasksController.state) {
-          case TasksState.initial:
-            return Container(
-                alignment: Alignment.center,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Text("holi")],
-                ));
-          case TasksState.loading:
-            return Container(
-                alignment: Alignment.center,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [CircularProgressIndicator()],
-                ));
-          case TasksState.success:
-            return Container(alignment: Alignment.center, child: _buildTasks());
-          case TasksState.noTasks:
-            return Container(
-                alignment: Alignment.center,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Text("No tasks sorry")],
-                ));
-          default:
-            return Container(
-                alignment: Alignment.center,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Text("crayoli")],
-                ));
-        }
-      },
-    );
+    return Container(
+        padding: EdgeInsets.all(16),
+        child: Consumer<TasksController>(
+          builder: (context, _tasksController, child) {
+            switch (_tasksController.state) {
+              case TasksState.initial:
+                return Container(
+                  alignment: Alignment.center,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [Text("Hola Mundo!")],
+                  ),
+                );
+              case TasksState.loading:
+                return Container(
+                  alignment: Alignment.center,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [CircularProgressIndicator()],
+                  ),
+                );
+              case TasksState.success:
+                return Container(
+                  alignment: Alignment.topCenter,
+                  child: SingleChildScrollView(
+                      child: Wrap(children: [_buildTasks()])),
+                );
+
+              case TasksState.noTasks:
+                return Container(
+                  alignment: Alignment.center,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [Text("No tienes ninguna tarea aún")],
+                  ),
+                );
+              default:
+                return Container(child: Text("crayoli"));
+            }
+          },
+        ));
   }
 
   Widget _buildTasks() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: _tasksController.tasks!
           .asMap()
           .map((i, item) => MapEntry(
@@ -141,10 +157,30 @@ class _TasksScreenState extends State<TasksScreen> {
   }
 
   Widget _getTask(int id, Task task) {
-    return Container(
-      child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text(task.id.toString())]),
+    return TaskCard(
+      _tasksController.userToken,
+      task: task,
+      tasksController: _tasksController,
+    );
+  }
+
+  Widget _floatingButton() {
+    return Consumer<TasksController>(
+      builder: (context, _tasksController, child) {
+        switch (_tasksController.state) {
+          case TasksState.initial:
+          case TasksState.loading:
+            return Container();
+          case TasksState.success:
+          case TasksState.noTasks:
+          default:
+            return FloatingActionButton(
+              onPressed: () => _postTask(token: _tasksController.userToken),
+              tooltip: 'Increment',
+              child: const Icon(Icons.add),
+            );
+        }
+      },
     );
   }
 }
